@@ -3,68 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>독서 사고훈련 MVP</title>
+  <title>Reason Reader MVP v3</title>
   <style>
     :root{
-      --bg:#f4f8fc; --panel:#ffffff; --line:#dbe7f3; --text:#17324a; --muted:#6d8499;
+      --bg:#f5f9fd; --card:#fff; --line:#d9e7f3; --text:#17324a; --muted:#6c8498;
       --navy:#163e64; --navy2:#0e2841; --blue:#4e95d9; --blue2:#a6caec; --blue3:#dceaf7;
-      --good:#1d8d61; --bad:#c25757; --amber:#b77a22; --shadow:0 16px 36px rgba(15,40,65,.10); --radius:22px;
+      --good:#1c8c5f; --bad:#c55555; --warn:#b67a24; --shadow:0 16px 38px rgba(16,40,64,.10);
+      --radius:22px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--text);background:linear-gradient(180deg,#f7fbff,#edf4fb)}
+    body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#f9fcff,#eef5fb);color:var(--text)}
     .app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}
     .sidebar{background:linear-gradient(180deg,var(--navy2),var(--navy));color:#fff;padding:24px 20px;position:sticky;top:0;height:100vh}
     .brand{display:flex;gap:12px;align-items:center;margin-bottom:24px}
-    .logo{width:54px;height:54px;border-radius:18px;background:radial-gradient(circle at 35% 30%, #84c7ff, var(--blue));position:relative;box-shadow:inset 0 -8px 0 rgba(0,0,0,.1)}
+    .logo{width:56px;height:56px;border-radius:18px;background:radial-gradient(circle at 35% 30%, #89cbff, var(--blue));position:relative;box-shadow:inset 0 -8px 0 rgba(0,0,0,.10)}
     .logo:before,.logo:after{content:"";position:absolute;top:17px;width:8px;height:8px;border-radius:50%;background:#fff}
     .logo:before{left:14px}.logo:after{right:14px}.mouth{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:18px;height:8px;border-bottom:3px solid #fff;border-radius:0 0 16px 16px}
-    .brand h1{margin:0;font-size:20px}.brand p{margin:4px 0 0;color:rgba(255,255,255,.72);font-size:12px}
-    .nav-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.56);margin:20px 0 10px}
+    .brand h1{margin:0;font-size:20px}.brand p{margin:4px 0 0;font-size:12px;color:rgba(255,255,255,.75)}
+    .nav-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.58);margin:18px 0 10px}
     .nav-btn{width:100%;border:0;background:rgba(255,255,255,.08);color:#fff;text-align:left;padding:13px 14px;border-radius:16px;margin-bottom:10px;cursor:pointer;font-size:15px}
     .nav-btn.active,.nav-btn:hover{background:rgba(255,255,255,.18)}
     .side-card{margin-top:18px;background:rgba(255,255,255,.08);padding:14px;border-radius:18px}
-    .side-card strong{display:block;margin-bottom:6px}.side-card p{margin:0;color:rgba(255,255,255,.8);font-size:13px;line-height:1.55}
-    .main{padding:28px}.screen{display:none}.screen.active{display:block}
+    .side-card strong{display:block;margin-bottom:6px}.side-card p{margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.82)}
+    .main{padding:28px}
+    .screen{display:none}
+    .screen.active{display:block}
     .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;background:linear-gradient(135deg,#fff,#f1f7fd);padding:28px;border-radius:30px;box-shadow:var(--shadow)}
-    .hero h2{margin:0 0 12px;font-size:34px;line-height:1.2}.hero p{margin:0;color:var(--muted);line-height:1.7}
+    .hero h2{margin:0 0 12px;font-size:34px;line-height:1.2}.hero p{margin:0;color:var(--muted);line-height:1.75}
     .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.badge{background:var(--blue3);color:var(--navy);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700}
-    .focus-card{background:linear-gradient(180deg,var(--navy),#225a90);color:#fff;padding:22px;border-radius:26px}
-    .focus-card h3{margin:0 0 10px}.focus-card p{color:rgba(255,255,255,.84)}
+    .focus-card{background:linear-gradient(180deg,var(--navy),#245d94);color:#fff;padding:22px;border-radius:26px}.focus-card h3{margin:0 0 10px}.focus-card p{margin:0;color:rgba(255,255,255,.85);line-height:1.7}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:20px}
-    .card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
     .col-4{grid-column:span 4}.col-5{grid-column:span 5}.col-6{grid-column:span 6}.col-7{grid-column:span 7}.col-8{grid-column:span 8}.col-12{grid-column:span 12}
     .title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
     .title h3{margin:0;font-size:20px}.title span{font-size:13px;color:var(--muted)}
-    .time-grid,.chip-grid,.choice-grid,.next-grid,.stats{display:grid;gap:12px}
-    .time-grid{grid-template-columns:repeat(3,1fr)}
-    .time-btn,.btn,.chip,.reason-chip,.rec-btn,.sentence-tag{border:0;cursor:pointer;border-radius:18px;font-weight:700;transition:.18s ease}
-    .time-btn{background:var(--blue3);color:var(--navy);padding:18px 14px;text-align:left}.time-btn strong{display:block;font-size:20px}.time-btn small{color:var(--muted)}
+    .time-grid,.stats,.choice-grid,.chip-grid,.next-grid,.mini-grid{display:grid;gap:12px}
+    .time-grid{grid-template-columns:repeat(3,1fr)} .stats{grid-template-columns:repeat(3,1fr)} .next-grid{grid-template-columns:repeat(3,1fr)}
+    .time-btn,.btn,.choice,.reason-chip,.conf-btn,.tag-chip,.next-btn,.mini-choice,.stage-dot{border:0;border-radius:18px;cursor:pointer;transition:.18s ease}
+    .time-btn{background:var(--blue3);color:var(--navy);padding:18px 14px;text-align:left;font-weight:700}
+    .time-btn strong{display:block;font-size:20px}.time-btn small{color:var(--muted)}
     .time-btn.selected,.time-btn:hover{background:var(--blue);color:#fff;transform:translateY(-2px)}
-    .btn{padding:14px 18px;background:var(--navy);color:#fff}.btn.secondary{background:var(--blue3);color:var(--navy)}.btn.ghost{background:#f3f8fc;color:var(--navy);border:1px solid var(--line)}
-    .row{display:flex;gap:10px;flex-wrap:wrap}.mini-list{display:grid;gap:10px}.mini-item{padding:14px 16px;border-radius:16px;background:#f8fbff;border:1px solid #e2edf8}
-    .mini-item strong{display:block;margin-bottom:5px}.mini-item span{font-size:13px;color:var(--muted)}
-    .stats{grid-template-columns:repeat(3,1fr)}.stat{padding:16px;border-radius:18px;background:#f8fbff;border:1px solid #e4eef9}.stat b{display:block;font-size:24px;margin-bottom:5px}
-    .topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-    .pill{display:inline-flex;gap:6px;align-items:center;padding:8px 12px;border-radius:999px;background:var(--blue3);color:var(--navy);font-size:13px;font-weight:700}
-    .progress{width:200px;height:10px;border-radius:999px;background:#e6eff8;overflow:hidden}.progress>div{height:100%;width:18%;background:linear-gradient(90deg,var(--blue),var(--navy))}
-    .passage{background:#fbfdff;border:1px solid #e2edf8;border-radius:20px;padding:18px;line-height:1.9;font-size:17px}
-    .sentence{display:inline;padding:4px 6px;border-radius:9px;cursor:pointer;transition:.15s}
-    .sentence.ev1{background:rgba(78,149,217,.18)} .sentence.ev2{background:rgba(29,141,97,.14)}
-    .stage-nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.stage-dot{padding:10px 12px;border-radius:999px;background:#eff5fb;color:var(--muted);font-size:13px;font-weight:700}.stage-dot.active{background:var(--navy);color:#fff}
-    .panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.helper{font-size:13px;color:var(--muted);line-height:1.6}
-    .chip-grid{grid-template-columns:repeat(2,1fr)}
-    .chip,.reason-chip,.sentence-tag,.rec-btn{padding:13px 14px;background:#f4f8fc;color:var(--navy);text-align:left;border:1px solid #deebf7}
-    .chip.selected,.reason-chip.selected,.sentence-tag.selected,.rec-btn:hover{background:#e7f2fc;border-color:#bdd9f3}
-    .sequence{display:grid;gap:10px;margin-top:8px}.seq-card{padding:14px 16px;border-radius:16px;background:#f7fbff;border:1px solid #e2edf8;cursor:pointer;font-weight:600}
+    .btn{padding:14px 18px;background:var(--navy);color:#fff;font-weight:700}
+    .btn.secondary{background:var(--blue3);color:var(--navy)}
+    .btn.ghost{background:#f4f8fc;color:var(--navy);border:1px solid var(--line)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .stat{padding:16px;border-radius:18px;background:#f8fbff;border:1px solid #e3eef9}
+    .stat b{display:block;font-size:24px;margin-bottom:6px}
+    .mini-item{padding:14px 16px;border-radius:16px;background:#f8fbff;border:1px solid #e2edf8}
+    .mini-item strong{display:block;margin-bottom:5px}.mini-item span{font-size:13px;color:var(--muted);line-height:1.6}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:var(--blue3);color:var(--navy);font-size:13px;font-weight:700}
+    .session-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+    .passage{background:#fbfdff;border:1px solid #e3edf8;border-radius:20px;padding:18px;line-height:1.9;font-size:17px}
+    .sentence{padding:4px 6px;border-radius:10px;cursor:pointer;transition:.15s}
+    .sentence.sel1{background:rgba(78,149,217,.18)} .sentence.sel2{background:rgba(28,140,95,.14)}
+    .choice,.reason-chip,.conf-btn,.tag-chip,.next-btn,.mini-choice{padding:13px 14px;background:#f4f8fc;color:var(--navy);text-align:left;border:1px solid #deebf7;font-weight:700}
+    .choice.selected,.reason-chip.selected,.conf-btn.selected,.tag-chip.selected,.mini-choice.selected{background:#e7f2fc;border-color:#bdd9f3}
+    .feedback{margin-top:14px;padding:14px 16px;border-radius:18px;display:none;line-height:1.7}
+    .feedback.show{display:block}.feedback.good{background:rgba(28,140,95,.08);color:#216648}.feedback.bad{background:rgba(197,85,85,.08);color:#8c4444}.feedback.warn{background:rgba(182,122,36,.10);color:#7f571c}
+    .stage-nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    .stage-dot{padding:10px 12px;background:#eef5fb;color:var(--muted);font-weight:700;font-size:13px;border-radius:999px}
+    .stage-dot.active{background:var(--navy);color:#fff}
+    .progress{width:200px;height:10px;border-radius:999px;background:#e6eff8;overflow:hidden}
+    .progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--navy))}
+    .helper{font-size:13px;color:var(--muted);line-height:1.6}
+    .sequence{display:grid;gap:10px}
+    .seq-card{padding:14px 16px;border-radius:16px;background:#f7fbff;border:1px solid #e2edf8;cursor:pointer;font-weight:700}
     .seq-card.selected{background:#e7f2fc;border-color:#bdd9f3}
-    .feedback{margin-top:14px;padding:14px 16px;border-radius:18px;display:none;line-height:1.7}.feedback.show{display:block}.feedback.good{background:rgba(29,141,97,.08);color:#216447}.feedback.bad{background:rgba(194,87,87,.08);color:#894545}.feedback.warn{background:rgba(183,122,34,.10);color:#81571a}
-    .weak-tags{display:flex;gap:10px;flex-wrap:wrap}.weak-tag{padding:10px 12px;border-radius:999px;background:#eef5fb;color:var(--navy);font-weight:700;font-size:13px}
-    .next-grid{grid-template-columns:repeat(3,1fr)}
-    .rec-btn strong{display:block;margin-bottom:6px}.rec-btn span{font-size:12px;color:var(--muted);font-weight:500}
-    .map{display:grid;grid-template-columns:1fr 1fr;gap:12px}.map-box{padding:16px;border-radius:18px;background:#f8fbff;border:1px solid #e3edf8}
-    .map-box h4{margin:0 0 8px}.map-box ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.7}.small{font-size:13px;color:var(--muted)}
-    @media (max-width:1100px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{grid-template-columns:1fr}.col-4,.col-5,.col-6,.col-7,.col-8{grid-column:span 12}}
-    @media (max-width:720px){.main{padding:16px}.time-grid,.chip-grid,.next-grid,.stats,.map{grid-template-columns:1fr}.hero h2{font-size:28px}.passage{font-size:16px}}
+    .map{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .map-box{padding:16px;border-radius:18px;background:#f8fbff;border:1px solid #e3edf8}
+    .map-box h4{margin:0 0 8px}.map-box ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.75}
+    .weak-tags{display:flex;gap:10px;flex-wrap:wrap}
+    .weak-tag{padding:10px 12px;border-radius:999px;background:#eef5fb;color:var(--navy);font-weight:700;font-size:13px}
+    .hidden{display:none}
+    .small{font-size:13px;color:var(--muted)}
+    @media (max-width:1100px){
+      .app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{grid-template-columns:1fr}
+      .col-4,.col-5,.col-6,.col-7,.col-8{grid-column:span 12}
+    }
+    @media (max-width:720px){
+      .main{padding:16px}.time-grid,.stats,.next-grid,.map,.mini-grid{grid-template-columns:1fr}.hero h2{font-size:28px}.passage{font-size:16px}
+    }
   </style>
 </head>
 <body>
@@ -72,16 +90,16 @@
   <aside class="sidebar">
     <div class="brand">
       <div class="logo"><div class="mouth"></div></div>
-      <div><h1>Reason Reader</h1><p>지문을 다시 조립하게 만드는 독서 앱</p></div>
+      <div><h1>Reason Reader</h1><p>세션마다 다른 사고를 훈련하는 독서 앱</p></div>
     </div>
     <div class="nav-title">screens</div>
     <button class="nav-btn active" data-screen="home">홈</button>
-    <button class="nav-btn" data-screen="session">세션 시작</button>
-    <button class="nav-btn" data-screen="result">약점 진단</button>
+    <button class="nav-btn" data-screen="session">세션</button>
+    <button class="nav-btn" data-screen="result">결과</button>
     <button class="nav-btn" data-screen="tail">꼬리 학습</button>
     <div class="side-card">
-      <strong>이번 MVP의 핵심</strong>
-      <p>자유서술 없이도 왜 골랐는지를 드러내게 만든다. 하이라이트, 이유 칩, 카드 재배열, 확신도, 약점 추천을 한 흐름으로 구현했다.</p>
+      <strong>v3에서 달라진 점</strong>
+      <p>2분, 7분, 20분이 서로 다른 지문과 다른 인터랙션으로 작동한다. 짧은 세션은 문장/문단 교정, 중간 세션은 근거 연결, 긴 세션은 풀지문과 전수 분석에 맞춘다.</p>
     </div>
   </aside>
 
@@ -89,142 +107,248 @@
     <section class="screen active" id="home">
       <div class="hero">
         <div>
-          <h2>정답을 맞히게 하는 앱이 아니라<br>선택한 이유를 구조로 드러내는 앱</h2>
-          <p>손글씨나 긴 타이핑 대신, 근거 하이라이트·이유 칩·순서 재배열로 사용자의 사고를 드러내고, 그 약점에 맞는 다음 학습까지 바로 연결합니다.</p>
+          <h2>2분, 7분, 20분이<br>정말 다른 경험이 되도록 다시 만든 버전</h2>
+          <p>2분은 철학 문장·문단 태깅, 7분은 경제 지문 기반 근거 연결, 20분은 과학 풀지문과 문제 2개 전수 분석으로 나눴다. 시간에 따라 콘텐츠와 인터랙션이 함께 바뀐다.</p>
           <div class="badges">
-            <span class="badge">근거 하이라이트</span>
-            <span class="badge">이유 칩</span>
-            <span class="badge">카드 재배열</span>
+            <span class="badge">2분 철학 문장</span>
+            <span class="badge">7분 경제 지문</span>
+            <span class="badge">20분 과학 풀지문</span>
             <span class="badge">약점 태그</span>
             <span class="badge">꼬리 추천</span>
           </div>
         </div>
         <div class="focus-card">
-          <h3>오늘의 흐름</h3>
-          <p>1) 시간 선택<br>2) 문제 풀이<br>3) 근거 하이라이트<br>4) 판단 이유 선택<br>5) 논리 순서 재배열<br>6) 약점 진단과 꼬리 학습</p>
+          <h3>세션별 핵심</h3>
+          <p>2분: 역할 태깅 + 미니 판단<br>7분: 근거 2개 + 이유 칩 + 재배열<br>20분: 문단 구조 + 문제 2개 + 선지 제거</p>
         </div>
       </div>
 
       <div class="grid">
         <div class="card col-7">
-          <div class="title"><h3>지금 몇 분 가능해?</h3><span>세션 길이에 따라 사고 단위를 조절</span></div>
+          <div class="title"><h3>지금 몇 분 가능해?</h3><span>시간에 따라 콘텐츠와 과업이 같이 바뀜</span></div>
           <div class="time-grid">
-            <button class="time-btn" data-mode="micro"><strong>2분</strong><small>문장·문단·미니 약점 교정</small></button>
-            <button class="time-btn selected" data-mode="mid"><strong>7분</strong><small>짧은 지문 + 구조 + 선지</small></button>
-            <button class="time-btn" data-mode="deep"><strong>20분+</strong><small>풀지문 + 전수 분석</small></button>
+            <button class="time-btn" data-mode="micro"><strong>2분</strong><small>철학 문장·문단 교정</small></button>
+            <button class="time-btn selected" data-mode="mid"><strong>7분</strong><small>경제 지문 근거 연결</small></button>
+            <button class="time-btn" data-mode="deep"><strong>20분+</strong><small>과학 풀지문 전수 분석</small></button>
           </div>
           <div class="row" style="margin-top:12px">
-            <button class="btn" id="startBtn">MVP 시작</button>
+            <button class="btn" id="startBtn">선택한 세션 시작</button>
             <button class="btn secondary" id="tailBtn">꼬리 학습 보기</button>
           </div>
-          <p class="small" id="modeDesc">현재 추천: 7분 세션 — 짧은 지문 한 개에서 근거 찾기, 이유 칩 선택, 재배열까지 한 번에 체험합니다.</p>
+          <p class="small" id="modeDesc">현재 추천: 7분 세션 — 경제 지문 1개를 근거 연결과 재배열까지 묶어서 체험합니다.</p>
         </div>
         <div class="card col-5">
-          <div class="title"><h3>사용자에게 남는 데이터</h3><span>정오보다 사고 태그가 중요</span></div>
+          <div class="title"><h3>세션별 남는 데이터</h3><span>다른 시간, 다른 사고 흔적</span></div>
           <div class="stats">
-            <div class="stat"><b>2개</b><span>고른 근거 문장 수</span></div>
-            <div class="stat"><b>1개</b><span>선택한 판단 이유</span></div>
-            <div class="stat"><b>3개</b><span>추천 후속 학습</span></div>
-          </div>
-        </div>
-        <div class="card col-12">
-          <div class="title"><h3>이 MVP에서 검증할 것</h3><span>기술 검증 포인트</span></div>
-          <div class="mini-list">
-            <div class="mini-item"><strong>1. 사용자는 타이핑 없이도 “왜 골랐는지”를 드러낼 수 있는가</strong><span>하이라이트 + 이유 칩 + 카드 배열의 조합이 충분한지 확인</span></div>
-            <div class="mini-item"><strong>2. 문제 결과를 약점 태그로 바꿀 수 있는가</strong><span>예시-주장 혼동, 근거 연결 부족, 스키마 부족 같은 진단이 가능한지 확인</span></div>
-            <div class="mini-item"><strong>3. 후속 추천이 바로 이어질 때 더 하고 싶어지는가</strong><span>같은 약점의 미니문제, 문장 훈련, 스키마 카드 연결 검증</span></div>
+            <div class="stat"><b>2분</b><span>역할 구분 오류</span></div>
+            <div class="stat"><b>7분</b><span>근거 연결/재배열</span></div>
+            <div class="stat"><b>20분+</b><span>문단 구조/선지 제거</span></div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="screen" id="session">
-      <div class="card col-12">
-        <div class="topbar">
-          <div>
-            <div class="pill">7분 세션 · 짧은 경제 지문</div>
-            <h3 style="margin:10px 0 6px;font-size:28px">자유서술 대신 선택과 연결로 사고를 드러냅니다.</h3>
-            <div class="small">아래 5단계를 따라가면 마지막에 약점 진단과 후속 학습이 자동으로 추천됩니다.</div>
-          </div>
-          <div>
-            <div class="small" style="text-align:right;margin-bottom:8px">진행도</div>
-            <div class="progress"><div id="progressBar"></div></div>
-          </div>
-        </div>
-
-        <div class="stage-nav">
-          <div class="stage-dot active" id="dot1">1. 답 선택</div>
-          <div class="stage-dot" id="dot2">2. 근거 하이라이트</div>
-          <div class="stage-dot" id="dot3">3. 이유 칩</div>
-          <div class="stage-dot" id="dot4">4. 순서 재배열</div>
-          <div class="stage-dot" id="dot5">5. 확신도</div>
-        </div>
-
-        <div class="grid" style="margin-top:0">
-          <div class="card col-8">
-            <div class="title"><h3>지문</h3><span>문장을 눌러 근거로 선택</span></div>
-            <div class="passage">
-              <span class="sentence" data-idx="1">어떤 시장에서 정부가 가격 상한제를 도입하면 소비자는 일시적으로 더 낮은 가격에 재화를 구매할 수 있다.</span>
-              <span class="sentence" data-idx="2">그러나 상한 가격이 시장 균형 가격보다 낮게 설정되면 공급자는 이전보다 적은 양을 생산하려는 경향을 보인다.</span>
-              <span class="sentence" data-idx="3">그 결과 수요량은 늘고 공급량은 줄어들어 초과 수요가 발생할 수 있다.</span>
-              <span class="sentence" data-idx="4">이때 정부가 가격을 낮췄다는 사실만으로 소비자 후생이 반드시 증가한다고 단정할 수는 없다.</span>
-              <span class="sentence" data-idx="5">왜냐하면 재화를 구입하지 못하는 소비자가 생기거나 비가격적 배분 방식이 나타날 수 있기 때문이다.</span>
+      <!-- 2분 세션 -->
+      <div id="microSession" class="hidden">
+        <div class="card col-12">
+          <div class="session-head">
+            <div>
+              <div class="pill">2분 세션 · 철학 문장/문단 교정</div>
+              <h3 style="margin:10px 0 6px;font-size:28px">짧지만 다른 사고를 쓰게 만드는 2분 모드</h3>
+              <div class="small">철학 문장에서 결론과 근거를 구분하고, 짧은 문단의 역할을 고르며 빠르게 약점을 찌르는 구조다.</div>
             </div>
-            <div class="row" style="margin-top:12px"><button class="btn ghost" id="clearEvidence">근거 선택 초기화</button></div>
           </div>
-
-          <div class="card col-4">
-            <div class="panel">
-              <div class="title"><h3>문제</h3><span>한 문제로 전체 흐름 검증</span></div>
-              <div style="line-height:1.8;margin-bottom:14px">다음 중 윗글을 바탕으로 <b>가장 적절한 판단</b>은?</div>
-              <div class="choice-grid">
-                <button class="chip choice" data-choice="1">가격 상한제가 도입되면 소비자 후생은 항상 증가한다.</button>
-                <button class="chip choice" data-choice="2">가격 상한제가 균형 가격보다 낮으면 초과 수요가 발생할 수 있다.</button>
-                <button class="chip choice" data-choice="3">공급자는 가격 상한제가 있어도 생산량을 늘리려는 경향을 보인다.</button>
-                <button class="chip choice" data-choice="4">비가격적 배분 방식은 가격 상한제와 무관하다.</button>
+          <div class="stage-nav">
+            <div class="stage-dot active" id="m-dot1">1. 핵심 문장 태깅</div>
+            <div class="stage-dot" id="m-dot2">2. 문단 역할</div>
+            <div class="stage-dot" id="m-dot3">3. 미니 판단</div>
+          </div>
+          <div class="grid" style="margin-top:0">
+            <div class="card col-8">
+              <div class="title"><h3>짧은 철학 문단</h3><span>문장을 눌러 가장 핵심적인 결론 문장을 고르세요</span></div>
+              <div class="passage" id="microPassage">
+                <span class="sentence micro-sentence" data-midx="1">어떤 철학자는 정의가 개인의 선호를 단순히 합산하는 방식으로는 설명될 수 없다고 본다.</span>
+                <span class="sentence micro-sentence" data-midx="2">왜냐하면 선호의 총합이 크더라도 소수의 권리가 심각하게 침해될 수 있기 때문이다.</span>
+                <span class="sentence micro-sentence" data-midx="3">따라서 그는 정의의 판단 기준에 권리의 보장 여부가 포함되어야 한다고 주장한다.</span>
               </div>
-              <div class="feedback" id="choiceFeedback"></div>
+              <div class="feedback" id="microSentenceFb"></div>
+            </div>
+            <div class="card col-4">
+              <div class="title"><h3>문단 역할</h3><span>이 문단은 무엇을 하고 있나요?</span></div>
+              <div class="choice-grid">
+                <button class="mini-choice micro-role" data-role="define">개념 정의만 제시</button>
+                <button class="mini-choice micro-role" data-role="claim">주장과 근거 제시</button>
+                <button class="mini-choice micro-role" data-role="example">예시만 제시</button>
+              </div>
+              <div class="feedback" id="microRoleFb"></div>
+            </div>
+            <div class="card col-12">
+              <div class="title"><h3>마지막 1문항</h3><span>자투리시간용 미니 판단</span></div>
+              <div class="choice-grid">
+                <button class="mini-choice micro-q" data-q="1">이 글은 선호의 총합이 크면 언제나 정의롭다고 본다.</button>
+                <button class="mini-choice micro-q" data-q="2">이 글은 권리 보장이 정의 판단에 중요하다고 본다.</button>
+                <button class="mini-choice micro-q" data-q="3">이 글은 구체적 사례만 제시하고 결론은 유보한다.</button>
+              </div>
+              <div class="feedback" id="microQFb"></div>
+              <div class="row" style="margin-top:14px">
+                <button class="btn" id="microAnalyzeBtn">2분 세션 분석</button>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="card col-12">
-            <div class="title"><h3>2. 이 선지의 근거 문장을 2개 고르세요</h3><span>근거가 하나뿐이면 연결 부족일 수 있음</span></div>
-            <div class="helper">문장을 눌러 두 개까지 선택해보세요. 이 단계가 “왜 골랐는지”를 가장 가볍게 드러냅니다.</div>
-            <div class="feedback" id="evidenceFeedback"></div>
-          </div>
-
-          <div class="card col-6">
-            <div class="title"><h3>3. 내 판단 이유와 가장 가까운 것</h3><span>서술 대신 이유 칩 선택</span></div>
-            <div class="chip-grid">
-              <button class="reason-chip" data-reason="definition">핵심 개념의 관계를 그대로 대응했다</button>
-              <button class="reason-chip" data-reason="counter">앞 문장과 뒤 문장을 연결해 결론을 냈다</button>
-              <button class="reason-chip" data-reason="example">예시가 일반 규칙을 보여준다고 봤다</button>
-              <button class="reason-chip" data-reason="keyword">강한 표현에 끌려 판단했다</button>
+      <!-- 7분 세션 -->
+      <div id="midSession">
+        <div class="card col-12">
+          <div class="session-head">
+            <div>
+              <div class="pill">7분 세션 · 경제 지문</div>
+              <h3 style="margin:10px 0 6px;font-size:28px">근거를 찾고 연결하고 재배열하는 7분 모드</h3>
+              <div class="small">한 문제를 맞히는 것보다, 왜 그 선지를 골랐는지를 구조화된 입력으로 남기는 데 초점을 둔다.</div>
             </div>
-            <div class="feedback" id="reasonFeedback"></div>
-          </div>
-
-          <div class="card col-6">
-            <div class="title"><h3>4. 논리 순서를 맞춰보세요</h3><span>자기 말 대신 카드 재배열</span></div>
-            <div class="helper">아래 카드들을 위에서 아래 순서대로 클릭하세요.</div>
-            <div class="sequence">
-              <div class="seq-card" data-step="3">따라서 가격 상한제가 있어도 소비자 후생이 반드시 증가한다고 단정할 수 없다.</div>
-              <div class="seq-card" data-step="1">상한 가격이 균형 가격보다 낮으면 공급량은 줄고 수요량은 늘 수 있다.</div>
-              <div class="seq-card" data-step="2">그 결과 초과 수요가 발생하고 일부 소비자는 재화를 구입하지 못할 수 있다.</div>
+            <div>
+              <div class="small" style="text-align:right;margin-bottom:8px">진행도</div>
+              <div class="progress"><div id="midProgress"></div></div>
             </div>
-            <div class="feedback" id="sequenceFeedback"></div>
           </div>
-
-          <div class="card col-12">
-            <div class="title"><h3>5. 이번 판단의 확신도</h3><span>맞았어도 논리가 빈약한 경우를 잡기 위함</span></div>
-            <div class="row">
-              <button class="sentence-tag" data-confidence="sure">확실했다</button>
-              <button class="sentence-tag" data-confidence="half">반반이었다</button>
-              <button class="sentence-tag" data-confidence="guess">거의 찍었다</button>
+          <div class="stage-nav">
+            <div class="stage-dot active" id="mid-dot1">1. 답 선택</div>
+            <div class="stage-dot" id="mid-dot2">2. 근거 하이라이트</div>
+            <div class="stage-dot" id="mid-dot3">3. 이유 칩</div>
+            <div class="stage-dot" id="mid-dot4">4. 순서 재배열</div>
+            <div class="stage-dot" id="mid-dot5">5. 확신도</div>
+          </div>
+          <div class="grid" style="margin-top:0">
+            <div class="card col-8">
+              <div class="title"><h3>경제 지문</h3><span>근거 문장 2개를 선택</span></div>
+              <div class="passage">
+                <span class="sentence mid-sentence" data-sidx="1">어떤 시장에서 정부가 가격 상한제를 도입하면 소비자는 일시적으로 더 낮은 가격에 재화를 구매할 수 있다.</span>
+                <span class="sentence mid-sentence" data-sidx="2">그러나 상한 가격이 시장 균형 가격보다 낮게 설정되면 공급자는 이전보다 적은 양을 생산하려는 경향을 보인다.</span>
+                <span class="sentence mid-sentence" data-sidx="3">그 결과 수요량은 늘고 공급량은 줄어들어 초과 수요가 발생할 수 있다.</span>
+                <span class="sentence mid-sentence" data-sidx="4">이때 정부가 가격을 낮췄다는 사실만으로 소비자 후생이 반드시 증가한다고 단정할 수는 없다.</span>
+                <span class="sentence mid-sentence" data-sidx="5">왜냐하면 재화를 구입하지 못하는 소비자가 생기거나 비가격적 배분 방식이 나타날 수 있기 때문이다.</span>
+              </div>
+              <div class="row" style="margin-top:12px"><button class="btn ghost" id="midClearEvidence">근거 선택 초기화</button></div>
             </div>
-            <div class="row" style="margin-top:14px">
-              <button class="btn" id="analyzeBtn">약점 분석하기</button>
-              <button class="btn secondary" id="goResultBtn">결과 화면으로</button>
+            <div class="card col-4">
+              <div class="title"><h3>문제</h3><span>가장 적절한 판단</span></div>
+              <div class="choice-grid">
+                <button class="choice mid-choice" data-choice="1">가격 상한제가 도입되면 소비자 후생은 항상 증가한다.</button>
+                <button class="choice mid-choice" data-choice="2">가격 상한제가 균형 가격보다 낮으면 초과 수요가 발생할 수 있다.</button>
+                <button class="choice mid-choice" data-choice="3">공급자는 가격 상한제가 있어도 생산량을 늘리려는 경향을 보인다.</button>
+                <button class="choice mid-choice" data-choice="4">비가격적 배분 방식은 가격 상한제와 무관하다.</button>
+              </div>
+              <div class="feedback" id="midChoiceFb"></div>
+            </div>
+            <div class="card col-12">
+              <div class="title"><h3>근거 문장 2개</h3><span>원인과 결과가 둘 다 필요할 수 있음</span></div>
+              <div class="feedback" id="midEvidenceFb"></div>
+            </div>
+            <div class="card col-6">
+              <div class="title"><h3>판단 이유 칩</h3><span>서술 대신 선택</span></div>
+              <div class="chip-grid">
+                <button class="reason-chip mid-reason" data-reason="definition">핵심 개념의 관계를 그대로 대응했다</button>
+                <button class="reason-chip mid-reason" data-reason="counter">앞 문장과 뒤 문장을 연결해 결론을 냈다</button>
+                <button class="reason-chip mid-reason" data-reason="example">예시가 일반 규칙을 보여준다고 봤다</button>
+                <button class="reason-chip mid-reason" data-reason="keyword">강한 표현에 끌려 판단했다</button>
+              </div>
+              <div class="feedback" id="midReasonFb"></div>
+            </div>
+            <div class="card col-6">
+              <div class="title"><h3>논리 재배열</h3><span>원인 → 결과 → 판단</span></div>
+              <div class="sequence">
+                <div class="seq-card mid-seq" data-step="3">따라서 가격 상한제가 있어도 소비자 후생이 반드시 증가한다고 단정할 수 없다.</div>
+                <div class="seq-card mid-seq" data-step="1">상한 가격이 균형 가격보다 낮으면 공급량은 줄고 수요량은 늘 수 있다.</div>
+                <div class="seq-card mid-seq" data-step="2">그 결과 초과 수요가 발생하고 일부 소비자는 재화를 구입하지 못할 수 있다.</div>
+              </div>
+              <div class="feedback" id="midSeqFb"></div>
+            </div>
+            <div class="card col-12">
+              <div class="title"><h3>확신도</h3><span>정답을 맞혀도 사고가 빈약할 수 있음</span></div>
+              <div class="row">
+                <button class="conf-btn mid-conf" data-conf="sure">확실했다</button>
+                <button class="conf-btn mid-conf" data-conf="half">반반이었다</button>
+                <button class="conf-btn mid-conf" data-conf="guess">거의 찍었다</button>
+              </div>
+              <div class="row" style="margin-top:14px">
+                <button class="btn" id="midAnalyzeBtn">7분 세션 분석</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 20분 세션 -->
+      <div id="deepSession" class="hidden">
+        <div class="card col-12">
+          <div class="session-head">
+            <div>
+              <div class="pill">20분+ 세션 · 과학 풀지문</div>
+              <h3 style="margin:10px 0 6px;font-size:28px">문단 구조와 선지 제거까지 가는 20분+ 모드</h3>
+              <div class="small">과학 제재의 긴 지문을 읽고 문단 기능을 먼저 잡은 뒤, 문제 2개를 풀고 오답 선지 제거까지 본다.</div>
+            </div>
+          </div>
+          <div class="stage-nav">
+            <div class="stage-dot active" id="d-dot1">1. 문단 구조</div>
+            <div class="stage-dot" id="d-dot2">2. 문제 1</div>
+            <div class="stage-dot" id="d-dot3">3. 문제 2</div>
+            <div class="stage-dot" id="d-dot4">4. 오답 제거</div>
+          </div>
+          <div class="grid" style="margin-top:0">
+            <div class="card col-8">
+              <div class="title"><h3>과학 풀지문</h3><span>열 전달에 대한 설명</span></div>
+              <div class="passage">
+                <p><b>[1문단]</b> 열은 온도가 높은 곳에서 낮은 곳으로 이동하는 에너지 전달의 한 형태이다. 일상에서는 손을 따뜻한 컵에 대면 열이 손으로 전달되는 현상을 쉽게 관찰할 수 있다.</p>
+                <p><b>[2문단]</b> 열 전달 방식은 크게 전도, 대류, 복사로 나눌 수 있다. 전도는 물질의 직접 접촉을 통해 열이 이동하는 방식이며, 주로 고체에서 잘 나타난다.</p>
+                <p><b>[3문단]</b> 대류는 액체나 기체처럼 흐를 수 있는 유체에서 나타난다. 가열된 부분의 밀도가 낮아져 위로 올라가고, 상대적으로 차가운 부분이 아래로 내려오면서 순환이 형성된다.</p>
+                <p><b>[4문단]</b> 복사는 물질의 접촉 없이도 전자기파를 통해 열이 전달되는 방식이다. 태양의 열이 우주 공간을 거쳐 지구에 도달하는 것은 복사의 대표적인 예다.</p>
+              </div>
+            </div>
+            <div class="card col-4">
+              <div class="title"><h3>1. 문단 기능 선택</h3><span>각 문단의 역할을 골라보세요</span></div>
+              <div class="mini-grid">
+                <button class="tag-chip deep-role" data-role="introduce">1문단: 개념 도입</button>
+                <button class="tag-chip deep-role" data-role="classify">2문단: 분류와 정의</button>
+                <button class="tag-chip deep-role" data-role="process">3문단: 과정 설명</button>
+                <button class="tag-chip deep-role" data-role="example">4문단: 예시 제시</button>
+              </div>
+              <div class="feedback" id="deepRoleFb"></div>
+            </div>
+
+            <div class="card col-6">
+              <div class="title"><h3>문제 1</h3><span>지문 내용 판단</span></div>
+              <div class="choice-grid">
+                <button class="choice deep-q1" data-q1="1">전도는 물질의 접촉 없이도 발생한다.</button>
+                <button class="choice deep-q1" data-q1="2">대류는 주로 유체의 순환을 통해 열이 전달된다.</button>
+                <button class="choice deep-q1" data-q1="3">복사는 고체 내부에서만 나타난다.</button>
+              </div>
+              <div class="feedback" id="deepQ1Fb"></div>
+            </div>
+
+            <div class="card col-6">
+              <div class="title"><h3>문제 2</h3><span>보기 대응</span></div>
+              <div class="choice-grid">
+                <button class="choice deep-q2" data-q2="1">뜨거운 금속 막대를 잡자 손이 뜨거워졌다 → 복사</button>
+                <button class="choice deep-q2" data-q2="2">주전자 속 물이 데워지며 위아래로 순환했다 → 대류</button>
+                <button class="choice deep-q2" data-q2="3">태양열이 우주 공간을 거쳐 지구에 왔다 → 전도</button>
+              </div>
+              <div class="feedback" id="deepQ2Fb"></div>
+            </div>
+
+            <div class="card col-12">
+              <div class="title"><h3>오답 제거</h3><span>20분 세션만의 추가 훈련</span></div>
+              <div class="helper">문제 2의 오답 두 개가 왜 틀렸는지 골라보세요.</div>
+              <div class="choice-grid">
+                <button class="choice deep-elim" data-elim="1">전도와 복사를 혼동했다</button>
+                <button class="choice deep-elim" data-elim="2">대류와 전도를 혼동했다</button>
+                <button class="choice deep-elim" data-elim="3">복사와 예시 대응을 놓쳤다</button>
+              </div>
+              <div class="feedback" id="deepElimFb"></div>
+              <div class="row" style="margin-top:14px">
+                <button class="btn" id="deepAnalyzeBtn">20분 세션 분석</button>
+              </div>
             </div>
           </div>
         </div>
@@ -234,15 +358,15 @@
     <section class="screen" id="result">
       <div class="grid">
         <div class="card col-12">
-          <div class="title"><h3>약점 진단 결과</h3><span>정오보다 사고 태그를 남긴다</span></div>
+          <div class="title"><h3>약점 진단 결과</h3><span>세션마다 다른 약점 태그</span></div>
           <div class="map">
             <div class="map-box">
-              <h4>네가 남긴 입력</h4>
+              <h4>이번 세션 입력</h4>
               <ul>
-                <li id="summaryChoice">선택한 선지: 없음</li>
-                <li id="summaryEvidence">고른 근거: 없음</li>
-                <li id="summaryReason">이유 칩: 없음</li>
-                <li id="summaryConfidence">확신도: 없음</li>
+                <li id="summary1">아직 분석 전</li>
+                <li id="summary2">아직 분석 전</li>
+                <li id="summary3">아직 분석 전</li>
+                <li id="summary4">아직 분석 전</li>
               </ul>
             </div>
             <div class="map-box">
@@ -251,19 +375,17 @@
             </div>
           </div>
         </div>
-
         <div class="card col-12">
-          <div class="title"><h3>이번 문제에서 드러난 약점 태그</h3><span>문제 결과를 다음 학습으로 연결</span></div>
+          <div class="title"><h3>이번 세션 약점 태그</h3><span>문제를 다음 학습으로 연결</span></div>
           <div class="weak-tags" id="weakTags"><div class="weak-tag">분석 전</div></div>
-          <div class="feedback show warn" id="diagMessage">분석 버튼을 누르면 여기서 왜 이런 약점이 붙었는지 설명합니다.</div>
+          <div class="feedback show warn" id="diagMsg">세션을 마친 뒤 분석 버튼을 눌러보세요.</div>
         </div>
-
         <div class="card col-12">
-          <div class="title"><h3>바로 이어지는 후속 추천</h3><span>꼬리가 꼬리를 무는 학습</span></div>
+          <div class="title"><h3>후속 추천</h3><span>꼬리형 학습</span></div>
           <div class="next-grid">
-            <button class="rec-btn" data-next="mini"><strong>같은 사고 미니문제</strong><span>방금 드러난 약점을 1문항으로 바로 교정</span></button>
-            <button class="rec-btn" data-next="sentence"><strong>짧은 문장 3개 훈련</strong><span>예시/근거/결론 구분을 1분 안에 연습</span></button>
-            <button class="rec-btn" data-next="schema"><strong>경제 스키마 카드</strong><span>가격 상한제 지문의 기본 구조를 2분 복습</span></button>
+            <button class="next-btn" data-next="mini"><strong>같은 사고 미니문제</strong><span>방금 약점을 바로 찌름</span></button>
+            <button class="next-btn" data-next="sentence"><strong>짧은 문장 훈련</strong><span>문장 역할과 연결만 빠르게 재보정</span></button>
+            <button class="next-btn" data-next="schema"><strong>스키마 카드</strong><span>해당 제재의 전형 구조를 복습</span></button>
           </div>
         </div>
       </div>
@@ -272,9 +394,9 @@
     <section class="screen" id="tail">
       <div class="grid">
         <div class="card col-12">
-          <div class="title"><h3>꼬리 학습 데모</h3><span>약점마다 다른 후속 루트</span></div>
-          <div class="mini-list" id="tailContent">
-            <div class="mini-item"><strong>먼저 결과 화면에서 분석을 눌러보세요</strong><span>약점 태그가 붙으면 여기가 해당 유형 전용 콘텐츠로 바뀝니다.</span></div>
+          <div class="title"><h3>꼬리 학습 데모</h3><span>세션별 다른 후속 루트</span></div>
+          <div id="tailContent" class="mini-grid">
+            <div class="mini-item"><strong>먼저 세션 분석을 해보세요</strong><span>세션마다 여기가 다른 추천 내용으로 바뀝니다.</span></div>
           </div>
         </div>
       </div>
@@ -286,172 +408,591 @@
 const screens = document.querySelectorAll('.screen');
 const navBtns = document.querySelectorAll('.nav-btn');
 const timeBtns = document.querySelectorAll('.time-btn');
-const modeDesc = document.getElementById('modeDesc');
 const startBtn = document.getElementById('startBtn');
 const tailBtn = document.getElementById('tailBtn');
-const goResultBtn = document.getElementById('goResultBtn');
-const progressBar = document.getElementById('progressBar');
-const choices = document.querySelectorAll('.choice');
-const sentences = document.querySelectorAll('.sentence');
-const reasonChips = document.querySelectorAll('.reason-chip');
-const seqCards = document.querySelectorAll('.seq-card');
-const confBtns = document.querySelectorAll('.sentence-tag');
+const modeDesc = document.getElementById('modeDesc');
+const microSession = document.getElementById('microSession');
+const midSession = document.getElementById('midSession');
+const deepSession = document.getElementById('deepSession');
 
-let selectedMode = 'mid', selectedChoice = null, evidence = [], selectedReason = null, selectedConfidence = null, sequencePicked = [], diagnosisTags = [];
-const correctChoice = "2", reasonGood = "counter", seqAnswer = [1,2,3];
-const modeMap = {
-  micro:'현재 추천: 2분 세션 — 문장 역할, 미니 약점 교정, 스키마 카드처럼 자투리시간용 단위에 적합합니다.',
-  mid:'현재 추천: 7분 세션 — 짧은 지문 한 개에서 근거 찾기, 이유 칩 선택, 재배열까지 한 번에 체험합니다.',
-  deep:'현재 추천: 20분+ 세션 — 풀지문과 전수 선지 분석, 더 긴 자기 논리 재구성에 적합합니다.'
-};
+let selectedMode = 'mid';
+let diagnosisTags = [];
+let currentSessionType = 'mid';
 
 function showScreen(id){
   screens.forEach(s=>s.classList.toggle('active', s.id===id));
   navBtns.forEach(b=>b.classList.toggle('active', b.dataset.screen===id));
 }
 navBtns.forEach(btn=>btn.addEventListener('click',()=>showScreen(btn.dataset.screen)));
-startBtn.addEventListener('click',()=>showScreen('session'));
-tailBtn.addEventListener('click',()=>showScreen('tail'));
-goResultBtn.addEventListener('click',()=>showScreen('result'));
-timeBtns.forEach(btn=>btn.addEventListener('click',()=>{timeBtns.forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedMode=btn.dataset.mode;modeDesc.textContent=modeMap[selectedMode];}));
 
-choices.forEach(btn=>btn.addEventListener('click',()=>{
-  choices.forEach(c=>c.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedChoice = btn.dataset.choice;
-  const box = document.getElementById('choiceFeedback');
-  box.className = selectedChoice===correctChoice ? 'feedback show good' : 'feedback show bad';
-  box.textContent = selectedChoice===correctChoice ? '좋아요. 정답 자체는 맞습니다. 이제 왜 맞는지 근거와 연결로 드러내야 합니다.' : '정답은 아닙니다. 하지만 더 중요한 건 왜 그렇게 골랐는지입니다. 아래 단계에서 그 사고를 추적합니다.';
-  setProgress(1);
-}));
+const modeMap = {
+  micro:'현재 추천: 2분 세션 — 철학 문장과 짧은 문단의 역할을 빠르게 구분하며 자투리시간용 약점을 찌릅니다.',
+  mid:'현재 추천: 7분 세션 — 경제 지문 1개를 근거 연결과 재배열까지 묶어서 체험합니다.',
+  deep:'현재 추천: 20분+ 세션 — 과학 풀지문에서 문단 구조, 문제 2개, 오답 제거까지 가는 메인 세션입니다.'
+};
 
-sentences.forEach(span=>span.addEventListener('click',()=>{
-  const idx = Number(span.dataset.idx);
-  if(evidence.includes(idx)) evidence = evidence.filter(x=>x!==idx);
-  else if(evidence.length < 2) evidence.push(idx);
-  renderEvidence();
-}));
-
-document.getElementById('clearEvidence').addEventListener('click',()=>{evidence=[];renderEvidence();});
-
-function renderEvidence(){
-  sentences.forEach(s=>{
-    const idx = Number(s.dataset.idx);
-    s.classList.remove('ev1','ev2');
-    if(evidence[0]===idx) s.classList.add('ev1');
-    if(evidence[1]===idx) s.classList.add('ev2');
+timeBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    timeBtns.forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedMode = btn.dataset.mode;
+    modeDesc.textContent = modeMap[selectedMode];
   });
-  const box = document.getElementById('evidenceFeedback');
-  if(evidence.length===0){box.className='feedback';box.textContent='';return;}
-  setProgress(2);
-  const good = evidence.length===2 && evidence.includes(2) && evidence.includes(3);
-  if(good){box.className='feedback show good';box.textContent='좋습니다. 가격 상한제가 균형 가격보다 낮을 때 공급 감소·수요 증가가 생기고, 그 결과 초과 수요가 발생할 수 있다는 연결을 잘 잡았습니다.';}
-  else if(evidence.length===1){box.className='feedback show warn';box.textContent='근거가 한 문장뿐입니다. 이 문제는 두 단계 연결이 중요합니다. 한 문장을 더 골라보세요.';}
-  else {box.className='feedback show bad';box.textContent='근거 선택이 어긋났습니다. 결과를 말하는 문장과 그 원인이 되는 문장을 함께 봐야 합니다.';}
-}
-
-reasonChips.forEach(btn=>btn.addEventListener('click',()=>{
-  reasonChips.forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedReason = btn.dataset.reason;
-  const box = document.getElementById('reasonFeedback');
-  setProgress(3);
-  if(selectedReason===reasonGood){box.className='feedback show good';box.textContent='좋아요. 앞의 원인과 뒤의 결과를 연결해 판단했다는 점이 적절합니다.';}
-  else if(selectedReason==='keyword'){box.className='feedback show bad';box.textContent='강한 표현만 보고 판단하면 오답 위험이 큽니다. 이 문제는 핵심어보다 문장 간 인과 연결이 중요합니다.';}
-  else if(selectedReason==='example'){box.className='feedback show bad';box.textContent='이 지문은 예시가 아니라 개념 관계와 결과 구조를 설명하고 있습니다.';}
-  else {box.className='feedback show warn';box.textContent='개념 대응도 일부 필요하지만, 이 문제의 핵심은 원인과 결과를 연결하는 것입니다.';}
-}));
-
-seqCards.forEach(card=>card.addEventListener('click',()=>{
-  const step = Number(card.dataset.step);
-  if(sequencePicked.includes(step)) return;
-  sequencePicked.push(step);
-  card.classList.add('selected');
-  const box = document.getElementById('sequenceFeedback');
-  setProgress(4);
-  if(sequencePicked.length < 3){box.className='feedback show warn';box.textContent='좋아요. 순서를 계속 골라보세요. 지금까지 선택한 순서: ' + sequencePicked.join(' → ');}
-  else {
-    const ok = JSON.stringify(sequencePicked)===JSON.stringify(seqAnswer);
-    box.className = ok ? 'feedback show good' : 'feedback show bad';
-    box.textContent = ok ? '정확합니다. 원인 → 결과 → 판단의 순서를 제대로 재구성했습니다.' : '순서가 어긋났습니다. 먼저 가격 변화가 공급과 수요에 미치는 영향이 나오고, 그 다음 초과 수요, 마지막에 후생 판단이 따라옵니다.';
-  }
-}));
-
-confBtns.forEach(btn=>btn.addEventListener('click',()=>{confBtns.forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedConfidence=btn.dataset.confidence;setProgress(5);}));
-
-function setProgress(stage){
-  progressBar.style.width = `${stage*18}%`;
-  for(let i=1;i<=5;i++) document.getElementById(`dot${i}`).classList.toggle('active', i<=stage);
-}
-function reasonLabel(key){
-  return ({
-    definition:'핵심 개념의 관계를 그대로 대응했다',
-    counter:'앞 문장과 뒤 문장을 연결해 결론을 냈다',
-    example:'예시가 일반 규칙을 보여준다고 봤다',
-    keyword:'강한 표현에 끌려 판단했다'
-  })[key] || '없음';
-}
-function confidenceLabel(key){
-  return ({sure:'확실했다',half:'반반이었다',guess:'거의 찍었다'})[key] || '없음';
-}
-
-document.getElementById('analyzeBtn').addEventListener('click', ()=>{
-  diagnosisTags = [];
-  const diagnosis = [];
-
-  if(!selectedChoice){diagnosisTags.push('답 선택 미완료');diagnosis.push('아직 선지를 고르지 않았습니다. 이 MVP에서는 선지 선택이 후속 분석의 출발점입니다.');}
-  if(selectedChoice !== correctChoice){diagnosisTags.push('개념 관계 판단 약함');diagnosis.push('정답 선지를 고르지 못했습니다. 가격 상한제와 초과 수요의 관계를 정확히 대응하지 못한 것으로 보입니다.');}
-  if(evidence.length < 2){diagnosisTags.push('근거 연결 부족');diagnosis.push('근거 문장을 하나만 고르거나 충분히 고르지 않았습니다. 이 문제는 원인과 결과 두 문장을 함께 연결해야 풀립니다.');}
-  else if(!(evidence.includes(2) && evidence.includes(3))){diagnosisTags.push('핵심 근거 선택 어긋남');diagnosis.push('근거를 고르긴 했지만 핵심 인과 문장이 아니라 부수 문장을 잡았습니다. 결과를 묻는 선지에서는 원인 문장과 결과 문장을 함께 봐야 합니다.');}
-  if(selectedReason === 'keyword'){diagnosisTags.push('강한 표현 끌림');diagnosis.push('문장 간 연결보다 표현의 강도에 끌리는 경향이 보입니다. 이런 경우 “반드시”, “항상” 같은 말에 쉽게 흔들릴 수 있습니다.');}
-  else if(selectedReason === 'example'){diagnosisTags.push('예시/구조 혼동');diagnosis.push('설명 구조를 예시로 처리하는 경향이 있습니다. 이 지문은 사례 제시가 아니라 개념적 결과 구조를 설명합니다.');}
-  else if(selectedReason !== reasonGood){diagnosisTags.push('원인-결과 연결 약함');diagnosis.push('이 문제는 개념을 외우는 것보다 앞문장과 뒷문장을 인과적으로 연결하는 힘이 중요합니다.');}
-  if(sequencePicked.length === 3 && JSON.stringify(sequencePicked)!==JSON.stringify(seqAnswer)){diagnosisTags.push('논리 재배열 약함');diagnosis.push('원인 → 결과 → 판단의 흐름을 다시 세우는 단계에서 어긋났습니다. 이 유형은 카드 재배열 훈련이 효과적입니다.');}
-  if(selectedConfidence === 'guess'){diagnosisTags.push('정답 맞혀도 논리 미완성 가능');diagnosis.push('확신도가 낮았습니다. 맞혔더라도 사고가 덜 굳어졌을 수 있으므로 짧은 재훈련이 필요합니다.');}
-  if(diagnosisTags.length===0){diagnosisTags=['근거 연결 양호','재배열 양호'];diagnosis.push('이번 문제에서는 핵심 인과 구조를 무리 없이 잡았습니다. 다음 단계로는 같은 경제 스키마의 다른 문제를 짧게 풀어보는 것이 좋습니다.');}
-
-  document.getElementById('summaryChoice').textContent = `선택한 선지: ${selectedChoice ?? '없음'}번`;
-  document.getElementById('summaryEvidence').textContent = `고른 근거: ${evidence.length ? evidence.map(n=>n+'번 문장').join(', ') : '없음'}`;
-  document.getElementById('summaryReason').textContent = `이유 칩: ${reasonLabel(selectedReason)}`;
-  document.getElementById('summaryConfidence').textContent = `확신도: ${confidenceLabel(selectedConfidence)}`;
-
-  const diagList = document.getElementById('diagnosisList');
-  diagList.innerHTML = '';
-  diagnosis.forEach(t=>{const li=document.createElement('li');li.textContent=t;diagList.appendChild(li);});
-
-  const weakTags = document.getElementById('weakTags');
-  weakTags.innerHTML = '';
-  diagnosisTags.forEach(tag=>{const div=document.createElement('div');div.className='weak-tag';div.textContent=tag;weakTags.appendChild(div);});
-
-  const msg = document.getElementById('diagMessage');
-  msg.className = 'feedback show warn';
-  msg.textContent = '좋아요. 이제 이 약점을 바로 치는 후속 학습으로 넘어가면 됩니다. 아래 추천 버튼 중 하나를 눌러보세요.';
-  showScreen('result');
 });
 
-document.querySelectorAll('.rec-btn').forEach(btn=>btn.addEventListener('click',()=>renderTail(btn.dataset.next)));
+function renderSession(){
+  microSession.classList.add('hidden');
+  midSession.classList.add('hidden');
+  deepSession.classList.add('hidden');
+  currentSessionType = selectedMode;
+  if(selectedMode==='micro') microSession.classList.remove('hidden');
+  else if(selectedMode==='deep') deepSession.classList.remove('hidden');
+  else midSession.classList.remove('hidden');
+}
+startBtn.addEventListener('click',()=>{renderSession(); showScreen('session');});
+tailBtn.addEventListener('click',()=>showScreen('tail'));
+
+// 2분 세션
+let microSentence = null, microRole = null, microQ = null;
+document.querySelectorAll('.micro-sentence').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.micro-sentence').forEach(x=>x.classList.remove('sel1'));
+    btn.classList.add('sel1');
+    microSentence = btn.dataset.midx;
+    const fb = document.getElementById('microSentenceFb');
+    if(microSentence==='3'){
+      fb.className='feedback show good';
+      fb.textContent='좋아요. 3번 문장이 최종 주장, 즉 결론 역할입니다.';
+      document.getElementById('m-dot1').classList.add('active');
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='핵심 결론은 3번입니다. 1번과 2번은 각각 문제 제기와 근거에 가깝습니다.';
+    }
+  });
+});
+document.querySelectorAll('.micro-role').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.micro-role').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    microRole = btn.dataset.role;
+    const fb = document.getElementById('microRoleFb');
+    document.getElementById('m-dot2').classList.add('active');
+    if(microRole==='claim'){
+      fb.className='feedback show good';
+      fb.textContent='맞습니다. 이 문단은 주장과 그 근거를 함께 제시합니다.';
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='이 문단은 단순 정의나 예시가 아니라, 주장을 세우고 근거를 붙이는 구조입니다.';
+    }
+  });
+});
+document.querySelectorAll('.micro-q').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.micro-q').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    microQ = btn.dataset.q;
+    const fb = document.getElementById('microQFb');
+    document.getElementById('m-dot3').classList.add('active');
+    if(microQ==='2'){
+      fb.className='feedback show good';
+      fb.textContent='좋아요. 이 글의 결론은 권리 보장이 정의 판단의 기준에 포함되어야 한다는 것입니다.';
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='정답은 2번입니다. 이 글은 선호 합산만으로는 정의를 설명할 수 없고, 권리 보장을 포함해야 한다고 봅니다.';
+    }
+  });
+});
+document.getElementById('microAnalyzeBtn').addEventListener('click', ()=>{
+  diagnosisTags = [];
+  const diagnosis = [];
+  if(microSentence!=='3') { diagnosisTags.push('결론 문장 포착 약함'); diagnosis.push('짧은 문단에서도 결론 문장을 바로 잡는 힘이 약합니다.'); }
+  if(microRole!=='claim') { diagnosisTags.push('문단 역할 구분 약함'); diagnosis.push('개념 정의와 주장-근거 구조를 구분하는 훈련이 필요합니다.'); }
+  if(microQ!=='2') { diagnosisTags.push('철학 결론 대응 약함'); diagnosis.push('철학 문단에서 최종 주장과 그 판단 방향을 끝까지 잡는 훈련이 필요합니다.'); }
+  if(diagnosisTags.length===0){ diagnosisTags=['짧은 문단 구조 양호']; diagnosis.push('짧은 철학 문단에서는 결론과 근거를 잘 구분했습니다.'); }
+  writeResult(
+    [`세션: 2분 철학 문장/문단`, `핵심 문장 선택: ${microSentence ?? '없음'}`, `문단 역할 선택: ${microRole ?? '없음'}`, `미니 판단 선택: ${microQ ?? '없음'}`],
+    diagnosis
+  );
+});
+
+// 7분 세션
+let midChoice=null, midEvidence=[], midReason=null, midSeq=[], midConf=null;
+const midCorrectChoice='2', midCorrectEvidence=[2,3], midReasonGood='counter', midSeqAns=[1,2,3];
+function setMidProgress(stage){
+  document.getElementById('midProgress').style.width = `${stage*18}%`;
+  for(let i=1;i<=5;i++){
+    document.getElementById(`mid-dot${i}`).classList.toggle('active', i<=stage);
+  }
+}
+document.querySelectorAll('.mid-choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mid-choice').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    midChoice = btn.dataset.choice;
+    const fb = document.getElementById('midChoiceFb');
+    setMidProgress(1);
+    if(midChoice===midCorrectChoice){
+      fb.className='feedback show good';
+      fb.textContent='좋아요. 정답 자체는 맞았습니다. 이제 왜 맞는지를 근거와 연결로 남겨야 합니다.';
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='정답은 아닙니다. 그래도 왜 그렇게 판단했는지를 추적하는 것이 더 중요합니다.';
+    }
+  });
+});
+document.querySelectorAll('.mid-sentence').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const idx = Number(btn.dataset.sidx);
+    if(midEvidence.includes(idx)) midEvidence = midEvidence.filter(x=>x!==idx);
+    else if(midEvidence.length<2) midEvidence.push(idx);
+    document.querySelectorAll('.mid-sentence').forEach(x=>x.classList.remove('sel1','sel2'));
+    document.querySelectorAll('.mid-sentence').forEach(x=>{
+      const id = Number(x.dataset.sidx);
+      if(midEvidence[0]===id) x.classList.add('sel1');
+      if(midEvidence[1]===id) x.classList.add('sel2');
+    });
+    const fb = document.getElementById('midEvidenceFb');
+    if(midEvidence.length===0){ fb.className='feedback'; return; }
+    setMidProgress(2);
+    if(midEvidence.length===2 && midEvidence.includes(2) && midEvidence.includes(3)){
+      fb.className='feedback show good';
+      fb.textContent='좋습니다. 원인 문장과 결과 문장을 함께 잡았습니다.';
+    } else if(midEvidence.length===1){
+      fb.className='feedback show warn';
+      fb.textContent='한 문장만으로는 부족할 수 있습니다. 이 문제는 원인과 결과를 둘 다 잡아야 합니다.';
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='핵심 근거 선택이 어긋났습니다. 결과를 묻는 문제에서는 원인 문장과 결과 문장을 함께 보세요.';
+    }
+  });
+});
+document.getElementById('midClearEvidence').addEventListener('click',()=>{
+  midEvidence=[];
+  document.querySelectorAll('.mid-sentence').forEach(x=>x.classList.remove('sel1','sel2'));
+  const fb=document.getElementById('midEvidenceFb'); fb.className='feedback'; fb.textContent='';
+});
+document.querySelectorAll('.mid-reason').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mid-reason').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    midReason = btn.dataset.reason;
+    const fb = document.getElementById('midReasonFb');
+    setMidProgress(3);
+    if(midReason===midReasonGood){
+      fb.className='feedback show good';
+      fb.textContent='좋아요. 원인과 결과를 연결해 판단했다는 점이 적절합니다.';
+    } else if(midReason==='keyword'){
+      fb.className='feedback show bad';
+      fb.textContent='강한 표현에 끌리면 오답 위험이 큽니다. 이 문제는 인과 연결이 핵심입니다.';
+    } else {
+      fb.className='feedback show warn';
+      fb.textContent='이유 칩이 완전히 틀린 것은 아니지만, 핵심은 문장 간 원인-결과 연결입니다.';
+    }
+  });
+});
+document.querySelectorAll('.mid-seq').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const step = Number(btn.dataset.step);
+    if(midSeq.includes(step)) return;
+    midSeq.push(step);
+    btn.classList.add('selected');
+    const fb = document.getElementById('midSeqFb');
+    setMidProgress(4);
+    if(midSeq.length<3){
+      fb.className='feedback show warn';
+      fb.textContent=`지금까지 선택한 순서: ${midSeq.join(' → ')}`;
+    } else {
+      const ok = JSON.stringify(midSeq)===JSON.stringify(midSeqAns);
+      fb.className = ok ? 'feedback show good' : 'feedback show bad';
+      fb.textContent = ok ? '정확합니다. 원인 → 결과 → 판단의 순서를 제대로 세웠습니다.' : '순서가 어긋났습니다. 먼저 가격 변화, 다음 초과 수요, 마지막 후생 판단입니다.';
+    }
+  });
+});
+document.querySelectorAll('.mid-conf').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mid-conf').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    midConf = btn.dataset.conf;
+    setMidProgress(5);
+  });
+});
+document.getElementById('midAnalyzeBtn').addEventListener('click', ()=>{
+  diagnosisTags = [];
+  const diagnosis = [];
+  if(midChoice!==midCorrectChoice){ diagnosisTags.push('개념 관계 판단 약함'); diagnosis.push('정답 선지를 고르지 못했습니다. 경제 지문에서 가격 상한제와 초과 수요의 관계 대응이 약했습니다.'); }
+  if(midEvidence.length<2){ diagnosisTags.push('근거 연결 부족'); diagnosis.push('원인 문장과 결과 문장을 함께 잡지 못했습니다.'); }
+  else if(!(midEvidence.includes(2)&&midEvidence.includes(3))){ diagnosisTags.push('핵심 근거 선택 어긋남'); diagnosis.push('핵심 인과 문장보다 부수 문장을 근거로 잡았습니다.'); }
+  if(midReason==='keyword'){ diagnosisTags.push('강한 표현 끌림'); diagnosis.push('문장 간 연결보다 표현의 세기에 반응하는 경향이 있습니다.'); }
+  else if(midReason!==midReasonGood){ diagnosisTags.push('원인-결과 연결 약함'); diagnosis.push('핵심은 개념 암기가 아니라 원인과 결과의 연결입니다.'); }
+  if(midSeq.length===3 && JSON.stringify(midSeq)!==JSON.stringify(midSeqAns)){ diagnosisTags.push('논리 재배열 약함'); diagnosis.push('원인 → 결과 → 판단의 순서를 재구성하는 힘이 약했습니다.'); }
+  if(midConf==='guess'){ diagnosisTags.push('정답 맞혀도 논리 미완성 가능'); diagnosis.push('확신도가 낮았습니다. 같은 구조의 문제를 짧게 한 번 더 푸는 것이 좋습니다.'); }
+  if(diagnosisTags.length===0){ diagnosisTags=['근거 연결 양호','재배열 양호']; diagnosis.push('경제 지문에서 핵심 인과 구조를 잘 잡았습니다.'); }
+  writeResult(
+    [`세션: 7분 경제 지문`, `선택 선지: ${midChoice ?? '없음'}`, `근거 문장: ${midEvidence.length ? midEvidence.map(x=>x+'번').join(', ') : '없음'}`, `이유/확신도: ${midReason ?? '없음'} / ${midConf ?? '없음'}`],
+    diagnosis
+  );
+});
+
+// 20분 세션
+let deepRoles = new Set(), deepQ1=null, deepQ2=null, deepElim=[];
+document.querySelectorAll('.deep-role').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    btn.classList.toggle('selected');
+    if(deepRoles.has(btn.dataset.role)) deepRoles.delete(btn.dataset.role);
+    else deepRoles.add(btn.dataset.role);
+    const fb = document.getElementById('deepRoleFb');
+    document.getElementById('d-dot1').classList.add('active');
+    if(deepRoles.size===4){
+      fb.className='feedback show good';
+      fb.textContent='좋아요. 1문단은 도입, 2문단은 분류와 정의, 3문단은 과정, 4문단은 대표 예시 역할입니다.';
+    } else {
+      fb.className='feedback show warn';
+      fb.textContent='문단 기능을 전부 눌러보세요. 긴 세션에서는 구조를 먼저 잡는 것이 중요합니다.';
+    }
+  });
+});
+document.querySelectorAll('.deep-q1').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.deep-q1').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    deepQ1 = btn.dataset.q1;
+    const fb = document.getElementById('deepQ1Fb');
+    document.getElementById('d-dot2').classList.add('active');
+    if(deepQ1==='2'){
+      fb.className='feedback show good';
+      fb.textContent='맞습니다. 대류는 유체의 순환을 통해 열이 전달되는 방식입니다.';
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='정답은 2번입니다. 전도는 접촉, 복사는 전자기파를 통한 전달입니다.';
+    }
+  });
+});
+document.querySelectorAll('.deep-q2').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.deep-q2').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    deepQ2 = btn.dataset.q2;
+    const fb = document.getElementById('deepQ2Fb');
+    document.getElementById('d-dot3').classList.add('active');
+    if(deepQ2==='2'){
+      fb.className='feedback show good';
+      fb.textContent='좋아요. 주전자 속 물의 순환은 대류의 대표 예입니다.';
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='정답은 2번입니다. 뜨거운 금속 막대는 전도, 태양열은 복사에 해당합니다.';
+    }
+  });
+});
+document.querySelectorAll('.deep-elim').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    btn.classList.toggle('selected');
+    const val = btn.dataset.elim;
+    if(deepElim.includes(val)) deepElim = deepElim.filter(x=>x!==val);
+    else deepElim.push(val);
+    const fb = document.getElementById('deepElimFb');
+    document.getElementById('d-dot4').classList.add('active');
+    if(deepElim.includes('1') && deepElim.includes('3')){
+      fb.className='feedback show good';
+      fb.textContent='좋습니다. 1번은 전도/복사 혼동, 3번은 복사 예시 대응 실패가 핵심 오류입니다.';
+    } else {
+      fb.className='feedback show warn';
+      fb.textContent='오답 두 개의 오류 유형을 모두 골라보세요.';
+    }
+  });
+});
+document.getElementById('deepAnalyzeBtn').addEventListener('click', ()=>{
+  diagnosisTags = [];
+  const diagnosis = [];
+  if(deepRoles.size<4){ diagnosisTags.push('문단 구조 파악 약함'); diagnosis.push('긴 과학 지문에서는 문단 기능을 먼저 잡는 힘이 중요합니다.'); }
+  if(deepQ1!=='2'){ diagnosisTags.push('개념 정의 대응 약함'); diagnosis.push('전도·대류·복사의 정의를 정확히 대응하는 힘이 약했습니다.'); }
+  if(deepQ2!=='2'){ diagnosisTags.push('보기 대응 약함'); diagnosis.push('지문 개념을 구체적 사례와 연결하는 훈련이 더 필요합니다.'); }
+  if(!(deepElim.includes('1') && deepElim.includes('3'))){ diagnosisTags.push('오답 선지 제거 약함'); diagnosis.push('20분 세션에서는 정답 찾기뿐 아니라 오답이 왜 틀렸는지까지 제거해야 합니다.'); }
+  if(diagnosisTags.length===0){ diagnosisTags=['문단 구조 양호','선지 제거 양호']; diagnosis.push('과학 풀지문에서 구조 파악과 선지 제거를 안정적으로 수행했습니다.'); }
+  writeResult(
+    [`세션: 20분+ 과학 풀지문`, `문단 기능 선택 수: ${deepRoles.size}/4`, `문제 1/2 선택: ${deepQ1 ?? '없음'} / ${deepQ2 ?? '없음'}`, `오답 제거 선택: ${deepElim.length ? deepElim.join(', ') : '없음'}`],
+    diagnosis
+  );
+});
+
+function writeResult(summaryLines, diagnosis){
+  document.getElementById('summary1').textContent = summaryLines[0] || '없음';
+  document.getElementById('summary2').textContent = summaryLines[1] || '없음';
+  document.getElementById('summary3').textContent = summaryLines[2] || '없음';
+  document.getElementById('summary4').textContent = summaryLines[3] || '없음';
+  const diagList = document.getElementById('diagnosisList');
+  diagList.innerHTML = '';
+  diagnosis.forEach(text=>{
+    const li = document.createElement('li');
+    li.textContent = text;
+    diagList.appendChild(li);
+  });
+  const weakTags = document.getElementById('weakTags');
+  weakTags.innerHTML = '';
+  diagnosisTags.forEach(tag=>{
+    const div = document.createElement('div');
+    div.className = 'weak-tag';
+    div.textContent = tag;
+    weakTags.appendChild(div);
+  });
+  document.getElementById('diagMsg').textContent = '좋아요. 이제 이 약점을 바로 치는 후속 학습으로 넘어가면 됩니다.';
+  showScreen('result');
+}
+
+document.querySelectorAll('.next-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>renderTail(btn.dataset.next));
+});
+
 
 function renderTail(kind){
   showScreen('tail');
   const box = document.getElementById('tailContent');
-  if(kind==='mini'){
-    box.innerHTML = `
-      <div class="mini-item"><strong>같은 사고 미니문제</strong><span>방금 드러난 약점을 바로 찌르는 1문항입니다.</span></div>
-      <div class="mini-item"><strong>Q. 가격 상한제가 균형 가격보다 낮을 때 가장 먼저 확인해야 할 것은?</strong><span>정답 포인트: 공급량·수요량 변화의 방향</span></div>
-      <div class="mini-item"><strong>왜 이게 추천되나</strong><span>${diagnosisTags.includes('근거 연결 부족') || diagnosisTags.includes('핵심 근거 선택 어긋남') ? '근거 연결이 약해서 같은 인과 구조 문제를 바로 한 번 더 치는 것이 효과적입니다.' : '핵심 구조는 잡았으니 빠른 반복으로 굳히는 용도입니다.'}</span></div>`;
-  } else if(kind==='sentence'){
-    box.innerHTML = `
-      <div class="mini-item"><strong>짧은 문장 3개 훈련</strong><span>1분 안에 구조 감각만 재보정합니다.</span></div>
-      <div class="mini-item"><strong>문장 1</strong><span>“가격을 낮췄다고 해서 항상 후생이 증가하는 것은 아니다.” → 역할: 결론/판단</span></div>
-      <div class="mini-item"><strong>문장 2</strong><span>“공급자는 이전보다 적은 양을 생산하려는 경향을 보인다.” → 역할: 원인</span></div>
-      <div class="mini-item"><strong>문장 3</strong><span>“그 결과 초과 수요가 발생할 수 있다.” → 역할: 결과</span></div>`;
+
+  if(currentSessionType==='micro'){
+    if(kind==='mini'){
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 같은 사고 미니문제</h3><span>2분 세션 후속</span></div>
+          <div class="mini-item"><strong>문제</strong><span>다음 중 결론 문장에 해당하는 것을 고르세요.</span></div>
+          <div class="choice-grid" id="tailMicroMiniChoices">
+            <button class="mini-choice" data-c="1">정의는 개인의 선호 총합만으로 설명되기 어렵다.</button>
+            <button class="mini-choice" data-c="2">선호 총합이 커도 소수의 권리가 침해될 수 있다.</button>
+            <button class="mini-choice" data-c="3">따라서 정의의 판단에는 권리 보장이 포함되어야 한다.</button>
+          </div>
+          <div class="feedback" id="tailMicroMiniFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailMicroMiniChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailMicroMiniChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailMicroMiniFb');
+          if(btn.dataset.c==='3'){
+            fb.className='feedback show good';
+            fb.textContent='좋아요. 3번이 최종 판단이므로 결론 문장입니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 3번입니다. 1번과 2번은 결론을 뒷받침하는 문제 제기/근거에 가깝습니다.';
+          }
+        });
+      });
+    } else if(kind==='sentence'){
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 짧은 문장 훈련</h3><span>2분 세션 후속</span></div>
+          <div class="mini-item"><strong>문장</strong><span>“왜냐하면 선호의 총합이 크더라도 소수의 권리가 침해될 수 있기 때문이다.”</span></div>
+          <div class="choice-grid" id="tailMicroSentenceChoices">
+            <button class="mini-choice" data-c="1">결론</button>
+            <button class="mini-choice" data-c="2">근거</button>
+            <button class="mini-choice" data-c="3">예시</button>
+          </div>
+          <div class="feedback" id="tailMicroSentenceFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailMicroSentenceChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailMicroSentenceChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailMicroSentenceFb');
+          if(btn.dataset.c==='2'){
+            fb.className='feedback show good';
+            fb.textContent='맞습니다. “왜냐하면”으로 시작하므로 결론을 받치는 근거 역할입니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 근거입니다. 연결어가 문장 역할을 드러내는 단서가 됩니다.';
+          }
+        });
+      });
+    } else {
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 철학 스키마 카드</h3><span>2분 세션 후속</span></div>
+          <div class="mini-item"><strong>스키마</strong><span>문제 제기 → 이유 제시 → 규범적 결론</span></div>
+          <div class="mini-item"><strong>확인 문제</strong><span>아래 중 규범적 결론에 해당하는 표현을 고르세요.</span></div>
+          <div class="choice-grid" id="tailMicroSchemaChoices">
+            <button class="mini-choice" data-c="1">설명될 수 없다</button>
+            <button class="mini-choice" data-c="2">침해될 수 있다</button>
+            <button class="mini-choice" data-c="3">포함되어야 한다</button>
+          </div>
+          <div class="feedback" id="tailMicroSchemaFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailMicroSchemaChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailMicroSchemaChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailMicroSchemaFb');
+          if(btn.dataset.c==='3'){
+            fb.className='feedback show good';
+            fb.textContent='좋아요. “~해야 한다”는 규범적 결론의 전형적인 형태입니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 3번입니다. 철학 문단에서는 규범적 판단 표현을 빠르게 잡는 것이 중요합니다.';
+          }
+        });
+      });
+    }
+  } else if(currentSessionType==='mid'){
+    if(kind==='mini'){
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 같은 사고 미니문제</h3><span>7분 세션 후속</span></div>
+          <div class="mini-item"><strong>문제</strong><span>가격 상한제가 균형 가격보다 낮을 때 가장 먼저 확인해야 할 것은?</span></div>
+          <div class="choice-grid" id="tailMidMiniChoices">
+            <button class="mini-choice" data-c="1">소비자 감정의 변화</button>
+            <button class="mini-choice" data-c="2">공급량과 수요량의 변화 방향</button>
+            <button class="mini-choice" data-c="3">정부 정책의 도덕성</button>
+          </div>
+          <div class="feedback" id="tailMidMiniFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailMidMiniChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailMidMiniChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailMidMiniFb');
+          if(btn.dataset.c==='2'){
+            fb.className='feedback show good';
+            fb.textContent='맞습니다. 이 유형은 먼저 공급/수요가 각각 어떻게 변하는지 대응해야 합니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 2번입니다. 경제 지문에서는 변수 변화 방향을 먼저 잡아야 결과를 판단할 수 있습니다.';
+          }
+        });
+      });
+    } else if(kind==='sentence'){
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 짧은 문장 훈련</h3><span>7분 세션 후속</span></div>
+          <div class="mini-item"><strong>문장</strong><span>“그 결과 수요량은 늘고 공급량은 줄어들어 초과 수요가 발생할 수 있다.”</span></div>
+          <div class="choice-grid" id="tailMidSentenceChoices">
+            <button class="mini-choice" data-c="1">원인</button>
+            <button class="mini-choice" data-c="2">결과</button>
+            <button class="mini-choice" data-c="3">판단</button>
+          </div>
+          <div class="feedback" id="tailMidSentenceFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailMidSentenceChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailMidSentenceChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailMidSentenceFb');
+          if(btn.dataset.c==='2'){
+            fb.className='feedback show good';
+            fb.textContent='좋아요. “그 결과”는 결과 문장의 강한 신호입니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 결과입니다. 연결어를 보고 문장 역할을 빠르게 판별하는 연습이 필요합니다.';
+          }
+        });
+      });
+    } else {
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 경제 스키마 카드</h3><span>7분 세션 후속</span></div>
+          <div class="mini-item"><strong>스키마</strong><span>정책 도입 → 가격 변화 → 공급/수요 반응 → 시장 결과 → 후생 판단</span></div>
+          <div class="mini-item"><strong>확인 문제</strong><span>다음 중 후생 판단 단계에 해당하는 문장을 고르세요.</span></div>
+          <div class="choice-grid" id="tailMidSchemaChoices">
+            <button class="mini-choice" data-c="1">공급자는 이전보다 적은 양을 생산하려는 경향을 보인다.</button>
+            <button class="mini-choice" data-c="2">수요량은 늘고 공급량은 줄어든다.</button>
+            <button class="mini-choice" data-c="3">소비자 후생이 반드시 증가한다고 단정할 수는 없다.</button>
+          </div>
+          <div class="feedback" id="tailMidSchemaFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailMidSchemaChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailMidSchemaChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailMidSchemaFb');
+          if(btn.dataset.c==='3'){
+            fb.className='feedback show good';
+            fb.textContent='맞습니다. 3번은 결과를 종합한 최종 판단, 즉 후생 판단 단계입니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 3번입니다. 경제 지문에서는 마지막 판단 문장을 따로 잡아두는 습관이 중요합니다.';
+          }
+        });
+      });
+    }
   } else {
-    box.innerHTML = `
-      <div class="mini-item"><strong>경제 스키마 카드</strong><span>지문을 다 이해하려 하지 말고 구조만 잡게 하는 카드입니다.</span></div>
-      <div class="mini-item"><strong>스키마</strong><span>정책 도입 → 가격/조건 변화 → 공급·수요 반응 → 시장 결과 → 후생 판단</span></div>
-      <div class="mini-item"><strong>이 스키마가 필요한 이유</strong><span>${diagnosisTags.includes('개념 관계 판단 약함') || diagnosisTags.includes('원인-결과 연결 약함') ? '이번 문제에서 정책과 결과의 연결 고리가 약하게 드러났기 때문입니다.' : '제재 스키마를 미리 잡아두면 같은 경제 지문에서 속도가 빨라집니다.'}</span></div>`;
+    if(kind==='mini'){
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 같은 사고 미니문제</h3><span>20분 세션 후속</span></div>
+          <div class="mini-item"><strong>문제</strong><span>다음 중 복사에 해당하는 현상을 고르세요.</span></div>
+          <div class="choice-grid" id="tailDeepMiniChoices">
+            <button class="mini-choice" data-c="1">뜨거운 팬에 닿은 손이 데워짐</button>
+            <button class="mini-choice" data-c="2">주전자 속 물이 위아래로 순환함</button>
+            <button class="mini-choice" data-c="3">태양열이 우주 공간을 지나 지구에 도달함</button>
+          </div>
+          <div class="feedback" id="tailDeepMiniFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailDeepMiniChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailDeepMiniChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailDeepMiniFb');
+          if(btn.dataset.c==='3'){
+            fb.className='feedback show good';
+            fb.textContent='좋습니다. 접촉 없이 전자기파로 전달되므로 복사입니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 3번입니다. 1번은 전도, 2번은 대류입니다.';
+          }
+        });
+      });
+    } else if(kind==='sentence'){
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 짧은 문장 훈련</h3><span>20분 세션 후속</span></div>
+          <div class="mini-item"><strong>문장</strong><span>“가열된 부분의 밀도가 낮아져 위로 올라가고, 차가운 부분이 아래로 내려온다.”</span></div>
+          <div class="choice-grid" id="tailDeepSentenceChoices">
+            <button class="mini-choice" data-c="1">분류 정의</button>
+            <button class="mini-choice" data-c="2">과정 설명</button>
+            <button class="mini-choice" data-c="3">대표 예시</button>
+          </div>
+          <div class="feedback" id="tailDeepSentenceFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailDeepSentenceChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailDeepSentenceChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailDeepSentenceFb');
+          if(btn.dataset.c==='2'){
+            fb.className='feedback show good';
+            fb.textContent='맞습니다. 이 문장은 대류가 일어나는 과정을 설명합니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 과정 설명입니다. 과학 지문에서는 과정 문장을 따로 잡는 훈련이 중요합니다.';
+          }
+        });
+      });
+    } else {
+      box.innerHTML = `
+        <div class="card col-12">
+          <div class="title"><h3>꼬리 학습 · 과학 스키마 카드</h3><span>20분 세션 후속</span></div>
+          <div class="mini-item"><strong>스키마</strong><span>개념 도입 → 분류/정의 → 작동 과정 → 대표 예시</span></div>
+          <div class="mini-item"><strong>확인 문제</strong><span>다음 중 대표 예시에 해당하는 문장을 고르세요.</span></div>
+          <div class="choice-grid" id="tailDeepSchemaChoices">
+            <button class="mini-choice" data-c="1">열은 온도가 높은 곳에서 낮은 곳으로 이동한다.</button>
+            <button class="mini-choice" data-c="2">태양의 열이 우주 공간을 거쳐 지구에 도달한다.</button>
+            <button class="mini-choice" data-c="3">전도는 물질의 직접 접촉을 통해 열이 이동하는 방식이다.</button>
+          </div>
+          <div class="feedback" id="tailDeepSchemaFb"></div>
+        </div>`;
+      document.querySelectorAll('#tailDeepSchemaChoices .mini-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('#tailDeepSchemaChoices .mini-choice').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          const fb = document.getElementById('tailDeepSchemaFb');
+          if(btn.dataset.c==='2'){
+            fb.className='feedback show good';
+            fb.textContent='좋아요. 2번은 복사를 보여주는 대표 예시 문장입니다.';
+          } else {
+            fb.className='feedback show bad';
+            fb.textContent='정답은 2번입니다. 1번은 개념 도입, 3번은 정의에 가깝습니다.';
+          }
+        });
+      });
+    }
   }
 }
+
 </script>
 </body>
 </html>
